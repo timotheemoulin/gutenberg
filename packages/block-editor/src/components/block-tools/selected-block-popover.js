@@ -178,7 +178,7 @@ function SelectedBlockPopover( {
 					key={ clientId }
 				/>
 			) }
-			{ shouldShowBreadcrumb && (
+			{ false && (
 				<BlockSelectionButton
 					clientId={ clientId }
 					rootClientId={ rootClientId }
@@ -247,7 +247,13 @@ export default function WrappedBlockPopover( {
 		name,
 		isEmptyDefaultBlock,
 		capturingClientId,
+		hasReducedUI,
+		isNavigationMode,
 	} = selected;
+
+	if ( hasReducedUI && ! isNavigationMode ) {
+		return null;
+	}
 
 	if ( ! name ) {
 		return null;
