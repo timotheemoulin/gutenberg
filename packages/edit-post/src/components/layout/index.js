@@ -213,6 +213,7 @@ function Layout( { styles } ) {
 					...interfaceLabels,
 					secondarySidebar: secondarySidebarLabel,
 				} }
+				isDistractionFree={ hasReducedUI }
 				header={
 					<Header
 						setEntitiesSavedStatesCallback={
