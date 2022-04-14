@@ -18,9 +18,10 @@ import {
 } from './press-key-with-modifier';
 import { pressKeyTimes } from './press-key-times';
 import { openPreviewPage } from './preview';
+import { selectBlockByClientId } from './select-block-by-client-id';
 import { setBrowserViewport } from './set-browser-viewport';
 import { visitAdminPage } from './visit-admin-page';
-import { visitSiteEditor } from './site-editor';
+import { visitSiteEditor, saveSiteEditorEntities } from './site-editor';
 
 class PageUtils {
 	browser: Browser;
@@ -44,6 +45,8 @@ class PageUtils {
 	visitSiteEditor = visitSiteEditor;
 	openDocumentSettingsSidebar = openDocumentSettingsSidebar;
 	openPreviewPage = openPreviewPage;
+	saveSiteEditorEntities = saveSiteEditorEntities;
+	selectBlockByClientId = selectBlockByClientId;
 	setBrowserViewport = setBrowserViewport;
 	pressKeyTimes = pressKeyTimes;
 }

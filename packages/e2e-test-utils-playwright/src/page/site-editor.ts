@@ -1,7 +1,4 @@
 /**
- * External dependencies
- */
-/**
  * WordPress dependencies
  */
 import { addQueryArgs } from '@wordpress/url';
@@ -11,7 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import type { PageUtils } from './index';
 
-const VISUAL_EDITOR_SELECTOR = 'iframe[title="Editor canvas"i]';
+const CANVAS_SELECTOR = 'iframe[title="Editor canvas"i]';
 
 interface SiteEditorQueryParams {
 	postId: string | number;
@@ -23,9 +20,9 @@ interface SiteEditorQueryParams {
  *
  * By default, it also skips the welcome guide. The option can be disabled if need be.
  *
- * @param  this
- * @param  query            Query params to be serialized as query portion of URL.
- * @param  skipWelcomeGuide Whether to skip the welcome guide as part of the navigation.
+ * @param {PageUtils}             this
+ * @param {SiteEditorQueryParams} query            Query params to be serialized as query portion of URL.
+ * @param {boolean}               skipWelcomeGuide Whether to skip the welcome guide as part of the navigation.
  */
 export async function visitSiteEditor(
 	this: PageUtils,
@@ -38,7 +35,7 @@ export async function visitSiteEditor(
 	} ).slice( 1 );
 
 	await this.visitAdminPage( 'themes.php', path );
-	await this.page.waitForSelector( VISUAL_EDITOR_SELECTOR );
+	await this.page.waitForSelector( CANVAS_SELECTOR );
 
 	if ( skipWelcomeGuide ) {
 		await this.page.evaluate( () => {
@@ -54,4 +51,32 @@ export async function visitSiteEditor(
 				.toggle( 'core/edit-site', 'welcomeGuideStyles', false );
 		} );
 	}
+}
+
+/**
+ * Save entities in the site editor. Assumes the editor is in a dirty state.
+ *
+ * @param {PageUtils} this
+ */
+export async function saveSiteEditorEntities( this: PageUtils ) {
+	await this.page
+		.locator( 'role=region[name="Header"i] >> role=button[name="Save"i]' )
+		.click();
+
+	// The sidebar entities panel opens with another save button. Click this too.
+	await this.page
+		.locator( 'role=region[name="Publish"i] >> role=button[name="Save"i]' )
+		.click();
+
+	// The panel will close revealing the main editor save button again.
+	// It will have the classname `.is-busy` while saving. Wait for it to
+	// not have that classname.
+	// TODO - find a way to improve this selector to use role/name.
+	await this.page.waitForSelector(
+		'.edit-site-save-button__button:not(.is-busy)'
+	);
+}
+
+export async function getCanvas( this: PageUtils ) {
+	return this.page.frameLocator( CANVAS_SELECTOR );
 }

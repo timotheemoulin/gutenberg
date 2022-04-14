@@ -6,6 +6,7 @@ import type { Browser, Page, BrowserContext, Frame } from '@playwright/test';
 /**
  * Internal dependencies
  */
+import { clickBlockOptionsMenuItem } from './click-block-options-menu-item';
 import { clickBlockToolbarButton } from './click-block-toolbar-button';
 import { showBlockToolbar } from './show-block-toolbar';
 
@@ -45,6 +46,7 @@ export class EditorCanvas {
 		return frame;
 	}
 
+	clickBlockOptionsMenuItem = clickBlockOptionsMenuItem;
 	clickBlockToolbarButton = clickBlockToolbarButton;
 	showBlockToolbar = showBlockToolbar;
 }
