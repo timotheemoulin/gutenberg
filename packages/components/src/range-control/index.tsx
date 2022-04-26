@@ -38,6 +38,12 @@ import {
 import type { WordPressComponentProps } from '../ui/context';
 import type { RangeControlProps } from './types';
 
+const parseFloatOrNull = ( value?: number | string | null ) => {
+	return value !== null && value !== undefined
+		? parseFloat( `${ value }` )
+		: null;
+};
+
 function RangeControl< P >(
 	props: WordPressComponentProps< RangeControlProps< P >, 'div' >,
 	ref: ForwardedRef< HTMLDivElement >
@@ -137,14 +143,15 @@ function RangeControl< P >(
 		onChange( nextValue );
 	};
 
-	const handleOnChange = ( nextValue: number | string | null ) => {
-		nextValue = parseFloat( nextValue as string );
+	const handleOnChange = ( nextValue?: number | string | null ) => {
+		nextValue = parseFloatOrNull( nextValue );
 		setValue( nextValue );
+
 		/*
 		 * Calls onChange only when nextValue is numeric
 		 * otherwise may queue a reset for the blur event.
 		 */
-		if ( ! isNaN( nextValue ) ) {
+		if ( nextValue !== null && ! isNaN( nextValue ) ) {
 			if ( nextValue < min || nextValue > max ) {
 				nextValue = floatClamp( nextValue, min, max );
 			}
@@ -163,12 +170,10 @@ function RangeControl< P >(
 	};
 
 	const handleOnReset = () => {
-		let resetValue: number | null = parseFloat(
-			resetFallbackValue as string
-		);
-		let onChangeResetValue: number | undefined = resetValue;
+		let resetValue = parseFloatOrNull( resetFallbackValue );
+		let onChangeResetValue = resetValue ?? undefined;
 
-		if ( isNaN( resetValue ) ) {
+		if ( resetValue !== null && isNaN( resetValue ) ) {
 			resetValue = null;
 			onChangeResetValue = undefined;
 		}
@@ -215,7 +220,7 @@ function RangeControl< P >(
 			className={ classes }
 			label={ label }
 			hideLabelFromVision={ hideLabelFromVision }
-			id={ id as string }
+			id={ `${ id }` }
 			help={ help }
 		>
 			<Root className="components-range-control__root">
@@ -234,7 +239,7 @@ function RangeControl< P >(
 						className="components-range-control__slider"
 						describedBy={ describedBy }
 						disabled={ disabled }
-						id={ id as string }
+						id={ `${ id }` }
 						label={ label }
 						max={ max }
 						min={ min }
