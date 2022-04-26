@@ -17,6 +17,9 @@ function render_block_core_post_featured_image( $attributes, $content, $block ) 
 	if ( ! isset( $block->context['postId'] ) ) {
 		return '';
 	}
+
+	update_post_thumbnail_cache();
+
 	$post_ID = $block->context['postId'];
 
 	$size_slug      = isset( $attributes['sizeSlug'] ) ? $attributes['sizeSlug'] : 'post-thumbnail';
