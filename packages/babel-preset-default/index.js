@@ -74,6 +74,7 @@ module.exports = ( api ) => {
 		],
 		plugins: [
 			require.resolve( '@wordpress/warning/babel-plugin' ),
+			require.resolve( '@wordpress/block-library/babel-plugin' ),
 			[
 				require.resolve( '@wordpress/babel-plugin-import-jsx-pragma' ),
 				{
