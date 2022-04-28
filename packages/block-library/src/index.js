@@ -300,7 +300,6 @@ export const __experimentalRegisterExperimentalCoreBlocks = process.env
 	.IS_GUTENBERG_PLUGIN
 	? ( { enableFSEBlocks } = {} ) => {
 			const enabledExperiments = [
-				'true',
 				window.__experimentalEnableListBlockV2 ? 'list-v2' : null,
 				enableFSEBlocks ? 'fse' : null,
 			];
@@ -309,8 +308,10 @@ export const __experimentalRegisterExperimentalCoreBlocks = process.env
 				.filter( ( { metadata } ) =>
 					isBlockMetadataExperimental( metadata )
 				)
-				.filter( ( { metadata: { __experimental } } ) =>
-					enabledExperiments.includes( __experimental )
+				.filter(
+					( { metadata: { __experimental } } ) =>
+						__experimental === true ||
+						enabledExperiments.includes( __experimental )
 				)
 				.forEach( registerBlock );
 	  }

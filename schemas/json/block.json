@@ -27,8 +27,15 @@
 			"description": "The name for a block is a unique string that identifies a block. Names have to be structured as `namespace/block-name`, where namespace is the name of your plugin or theme."
 		},
 		"__experimental": {
-			"type": "string",
-			"description": "The name of the experiment this block is a part of, or 'true' if the block is experimental but there is no specific name."
+			"description": "The name of the experiment this block is a part of, or boolean true if there there is no specific experiment name.",
+			"anyOf": [
+			  {
+				"type": "string"
+			  },
+			  {
+				"type": "boolean"
+			  }
+			]
 		},
 		"title": {
 			"type": "string",
