@@ -126,122 +126,124 @@ const registerBlock = ( block ) => {
 /**
  * Function to get all the block-library blocks in an array
  */
-const getAllBlocks = () => {
-	const blocks = [
-		// Common blocks are grouped at the top to prioritize their display
-		// in various contexts — like the inserter and auto-complete components.
-		paragraph,
-		image,
-		heading,
-		gallery,
-		list,
-		quote,
-
-		// Register all remaining core blocks.
-		archives,
-		audio,
-		button,
-		buttons,
-		calendar,
-		categories,
-		window.wp && window.wp.oldEditor ? classic : null, // Only add the classic block in WP Context.
-		code,
-		column,
-		columns,
-		commentAuthorAvatar,
-		cover,
-		embed,
-		file,
-		group,
-		html,
-		latestComments,
-		latestPosts,
-		listItem,
-		navigationArea,
-		mediaText,
-		missing,
-		more,
-		nextpage,
-		pageList,
-		pattern,
-		preformatted,
-		pullquote,
-		reusableBlock,
-		rss,
-		search,
-		separator,
-		shortcode,
-		socialLink,
-		socialLinks,
-		spacer,
-		table,
-		// tableOfContents,
-		tagCloud,
-		textColumns,
-		verse,
-		video,
-
-		// theme blocks
-		navigation,
-		navigationLink,
-		navigationSubmenu,
-		siteLogo,
-		siteTitle,
-		siteTagline,
-		query,
-		templatePart,
-		avatar,
-		postTitle,
-		postExcerpt,
-		postFeaturedImage,
-		postContent,
-		postAuthor,
-		postAuthorName,
-		postComment,
-		postCommentsCount,
-		postCommentsLink,
-		postDate,
-		postTerms,
-		postNavigationLink,
-		postTemplate,
-		queryPagination,
-		queryPaginationNext,
-		queryPaginationNumbers,
-		queryPaginationPrevious,
-		queryNoResults,
-		readMore,
-		commentAuthorName,
-		commentContent,
-		commentDate,
-		commentEditLink,
-		commentReplyLink,
-		commentTemplate,
-		commentsTitle,
-		commentsQueryLoop,
-		commentsPagination,
-		commentsPaginationNext,
-		commentsPaginationNumbers,
-		commentsPaginationPrevious,
-
-		postComments,
-		postCommentsForm,
-		homeLink,
-		logInOut,
-		termDescription,
-		queryTitle,
-		postAuthorBiography,
-	];
-
-	// Filtering the blocks is needed because of the block-library/babel-plugin.
-	// It transforms the experimental blocks in the list above into empty list items.
+const getAllBlocks = () => [
+	// The blocks listed here are wrapped in a conditional expression
+	// by the block-library/babel-plugin.
+	//
 	// For example:
 	//    myExperimentalBlock,
-	// On build becomes:
+	// Becomes:
 	//    process.env.IS_GUTENBERG_PLUGIN === true ? myExperimentalBlock : void 0
-	// To make sure the dead code elimination removes it on build.
+	//
+	// This enables listing both stable and experimental blocks in a single list,
+	// while ensuring the dead code elimination removes the experimental blocks
+	// code during the production build.
+	//
 	// See https://github.com/WordPress/gutenberg/pull/40655 for more context.
-	return blocks.filter( ( block ) => block );
-};
+
+	// Common blocks are grouped at the top to prioritize their display
+	// in various contexts — like the inserter and auto-complete components.
+	paragraph,
+	image,
+	heading,
+	gallery,
+	list,
+	quote,
+
+	// Register all remaining core blocks.
+	archives,
+	audio,
+	button,
+	buttons,
+	calendar,
+	categories,
+	window.wp && window.wp.oldEditor ? classic : null, // Only add the classic block in WP Context.
+	code,
+	column,
+	columns,
+	commentAuthorAvatar,
+	cover,
+	embed,
+	file,
+	group,
+	html,
+	latestComments,
+	latestPosts,
+	listItem,
+	navigationArea,
+	mediaText,
+	missing,
+	more,
+	nextpage,
+	pageList,
+	pattern,
+	preformatted,
+	pullquote,
+	reusableBlock,
+	rss,
+	search,
+	separator,
+	shortcode,
+	socialLink,
+	socialLinks,
+	spacer,
+	table,
+	// tableOfContents,
+	tagCloud,
+	textColumns,
+	verse,
+	video,
+
+	// theme blocks
+	navigation,
+	navigationLink,
+	navigationSubmenu,
+	siteLogo,
+	siteTitle,
+	siteTagline,
+	query,
+	templatePart,
+	avatar,
+	postTitle,
+	postExcerpt,
+	postFeaturedImage,
+	postContent,
+	postAuthor,
+	postAuthorName,
+	postComment,
+	postCommentsCount,
+	postCommentsLink,
+	postDate,
+	postTerms,
+	postNavigationLink,
+	postTemplate,
+	queryPagination,
+	queryPaginationNext,
+	queryPaginationNumbers,
+	queryPaginationPrevious,
+	queryNoResults,
+	readMore,
+	commentAuthorName,
+	commentContent,
+	commentDate,
+	commentEditLink,
+	commentReplyLink,
+	commentTemplate,
+	commentsTitle,
+	commentsQueryLoop,
+	commentsPagination,
+	commentsPaginationNext,
+	commentsPaginationNumbers,
+	commentsPaginationPrevious,
+
+	postComments,
+	postCommentsForm,
+	homeLink,
+	logInOut,
+	termDescription,
+	queryTitle,
+	postAuthorBiography,
+];
 
 /**
  * Function to get all the core blocks in an array.
