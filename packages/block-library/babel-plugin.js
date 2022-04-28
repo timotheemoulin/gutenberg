@@ -11,8 +11,8 @@ const isBlockMetadataExperimental = require( './src/is-block-metadata-experiment
 const BLOCK_LIBRARY_INDEX_PATH = 'block-library/src/index.js';
 
 /**
- * Babel plugin that transforms the references to experimental blocks imported in
- * BLOCK_LIBRARY_INDEX_PATH to conditional expressions.
+ * Babel plugin that wraps the references to experimental blocks imported in
+ * BLOCK_LIBRARY_INDEX_PATH in conditional expressions.
  *
  * For example:
  *     myExperimentalBlock,
@@ -21,6 +21,8 @@ const BLOCK_LIBRARY_INDEX_PATH = 'block-library/src/index.js';
  *
  * This ensures the dead code elimination removes the experimental blocks modules
  * during the production build.
+ *
+ * For more context, see https://github.com/WordPress/gutenberg/pull/40655/
  *
  * @param {import('@babel/core')} babel Current Babel object.
  *
