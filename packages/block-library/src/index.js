@@ -305,13 +305,13 @@ export const __experimentalRegisterExperimentalCoreBlocks = process.env
 				enableFSEBlocks ? 'fse' : null,
 			];
 
-			const bl = getAllBlocks()
+			getAllBlocks()
 				.filter( ( { metadata } ) =>
 					isBlockMetadataExperimental( metadata )
 				)
 				.filter( ( { metadata: { __experimental } } ) =>
 					enabledExperiments.includes( __experimental )
-				);
-			bl.forEach( registerBlock );
+				)
+				.forEach( registerBlock );
 	  }
 	: undefined;
