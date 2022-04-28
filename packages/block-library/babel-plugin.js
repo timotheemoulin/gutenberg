@@ -31,12 +31,6 @@ const BLOCK_LIBRARY_INDEX_PATH = 'block-library/src/index.js';
 function babelPlugin( { types: t } ) {
 	const seen = Symbol();
 
-	const typeofProcessExpression = t.binaryExpression(
-		'!==',
-		t.unaryExpression( 'typeof', t.identifier( 'process' ), false ),
-		t.stringLiteral( 'undefined' )
-	);
-
 	const processEnvExpression = t.memberExpression(
 		t.identifier( 'process' ),
 		t.identifier( 'env' ),
@@ -51,16 +45,6 @@ function babelPlugin( { types: t } ) {
 			false
 		),
 		t.booleanLiteral( true )
-	);
-
-	const logicalExpression = t.logicalExpression(
-		'&&',
-		t.logicalExpression(
-			'&&',
-			typeofProcessExpression,
-			processEnvExpression
-		),
-		nodeEnvCheckExpression
 	);
 
 	return {
@@ -93,8 +77,9 @@ function babelPlugin( { types: t } ) {
 				// Only look for imports starting with ./ and without additional slashes in the path.
 				const importedPath = node.source.value;
 				if (
-					! importedPath?.startsWith( './' ) ||
-					importedPath?.split( '/' ).length > 2
+					! importedPath ||
+					! importedPath.startsWith( './' ) ||
+					importedPath.split( '/' ).length > 2
 				) {
 					return;
 				}
@@ -179,16 +164,17 @@ function babelPlugin( { types: t } ) {
 				//
 				//    archives,
 				//
-				// into this:
+				// Into this:
 				//
-				//    typeof process !== "undefined" &&
-				//       process.env &&
-				//       process.env.IS_GUTENBERG_PLUGIN === true ? archives : void 0;
+				//    process.env.IS_GUTENBERG_PLUGIN === true ? archives : void 0;
 				//
+				// So that later, webpack can turn it into this:
+				//
+				//    true === true ? archives : void 0;
 				node[ seen ] = true;
 				path.replaceWith(
 					t.ifStatement(
-						logicalExpression,
+						nodeEnvCheckExpression,
 						t.blockStatement( [ t.expressionStatement( node ) ] )
 					)
 				);

@@ -107,7 +107,7 @@ import * as textColumns from './text-columns';
 import * as verse from './verse';
 import * as video from './video';
 
-import * as isBlockMetadataExperimental from './is-block-metadata-experimental';
+import isBlockMetadataExperimental from './is-block-metadata-experimental';
 
 /**
  * Function to register an individual block.
@@ -302,10 +302,14 @@ export const __experimentalRegisterExperimentalCoreBlocks = process.env
 				window.__experimentalEnableListBlockV2 ? 'list-v2' : null,
 				enableFSEBlocks ? 'fse' : null,
 			];
-			getAllBlocks()
-				.filter( ( { metadata: { __experiment } } ) =>
-					enabledExperiments.includes( __experiment )
+
+			const bl = getAllBlocks()
+				.filter( ( { metadata } ) =>
+					isBlockMetadataExperimental( metadata )
 				)
-				.forEach( registerBlock );
+				.filter( ( { metadata: { __experimental } } ) =>
+					enabledExperiments.includes( __experimental )
+				);
+			bl.forEach( registerBlock );
 	  }
 	: undefined;
