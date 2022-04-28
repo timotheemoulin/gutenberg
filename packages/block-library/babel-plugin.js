@@ -4,6 +4,11 @@
 const fs = require( 'fs' );
 
 /**
+ * Internal dependencies
+ */
+const isBlockMetadataExperimental = require( './src/is-block-metadata-experimental' );
+
+/**
  * Babel plugin which transforms `warning` function calls to wrap within a
  * condition that checks if `process.env.NODE_ENV !== 'production'`.
  *
@@ -50,22 +55,22 @@ function babelPlugin( { types: t } ) {
 		visitor: {
 			ImportDeclaration( path, state ) {
 				const currentFile = state.file.opts.filename;
-				// Only transform the index.js.
+				// Only transform block-library/src/index.js.
 				if ( ! currentFile.endsWith( 'block-library/src/index.js' ) ) {
 					return;
 				}
-				const { node } = path;
 
 				// Only look for wildcard imports like import * as a from "source":
-				const isNamespaceSpecifier = node.specifiers.find(
+				const { node } = path;
+				const namespaceSpecifier = node.specifiers.find(
 					( specifier ) =>
 						specifier.type === 'ImportNamespaceSpecifier'
 				);
-				if ( ! isNamespaceSpecifier ) {
+				if ( ! namespaceSpecifier || ! namespaceSpecifier.local ) {
 					return;
 				}
 
-				// Only look for imports starting with ./ and without additional slashes.
+				// Only look for imports starting with ./ and without additional slashes in the path.
 				const importedPath = node.source.value;
 				if (
 					! importedPath?.startsWith( './' ) ||
@@ -81,15 +86,50 @@ function babelPlugin( { types: t } ) {
 					return;
 				}
 
-				const blockJSON = JSON.parse(
-					fs.readFileSync( blockJsonPath )
-				);
-				if ( blockJSON.name === 'core/archives' ) {
-					// const { name } = defaultSpecifier.local;
-					state.callee.isExperimentalBlock = true;
+				// Read the block.json file related to this block
+				const { name } = namespaceSpecifier.local;
+				let blockJSONBuffer;
+				try {
+					blockJSONBuffer = fs.readFileSync( blockJsonPath );
+				} catch ( e ) {
+					process.stderr.write(
+						'Could not read block.json for the module "' +
+							importedPath +
+							'" imported under name "' +
+							name +
+							'" from path "' +
+							blockJsonPath +
+							'"'
+					);
+					throw e;
 				}
+				let blockJSON;
+				try {
+					blockJSON = JSON.parse( blockJSONBuffer );
+				} catch ( e ) {
+					process.stderr.write(
+						'Could not parse block.json for the module "' +
+							importedPath +
+							'" imported under name "' +
+							name +
+							'" read from path "' +
+							blockJsonPath +
+							'"'
+					);
+					throw e;
+				}
+
+				// Only process the experimental blocks.
+				if ( ! isBlockMetadataExperimental( blockJSON ) ) {
+					return;
+				}
+
+				// Keep track of all the imported identifiers of the experimental blocks.
+				state.experimentalNames = [ name ].concat(
+					state.experimentalNames || []
+				);
 			},
-			CallExpression( path, state ) {
+			Identifier( path, state ) {
 				const currentFile = state.file.opts.filename;
 				// Only transform the index.js.
 				if ( ! currentFile.endsWith( 'block-library/src/index.js' ) ) {
@@ -103,27 +143,39 @@ function babelPlugin( { types: t } ) {
 					return;
 				}
 
-				const isExperimentalBlock = state.callee
-					? state.callee.isExperimentalBlock
-					: state.opts.callee
-					? state.opts.callee.isExperimentalBlock
-					: false;
-
-				if ( isExperimentalBlock ) {
-					// Turns this code:
-					// warning(argument);
-					// into this:
-					// typeof process !== "undefined" && process.env && process.env.NODE_ENV !== "production" ? warning(argument) : void 0;
-					node[ seen ] = true;
-					path.replaceWith(
-						t.ifStatement(
-							logicalExpression,
-							t.blockStatement( [
-								t.expressionStatement( node ),
-							] )
-						)
-					);
+				// Ignore if not used in an expression (but, say, a statement).
+				if ( ! path.isExpression( path.parent ) ) {
+					return;
 				}
+
+				// Ignore if it's not one of the experimental blocks identified in the ImportDeclaration visitor.
+				const names = state.experimentalNames || [];
+				const isExperimentalBlock =
+					names
+						.map( ( name ) => path.isIdentifier( { name } ) )
+						.filter( ( x ) => x ).length > 0;
+
+				if ( ! isExperimentalBlock ) {
+					return;
+				}
+
+				// Turns this code:
+				//
+				//    archives,
+				//
+				// into this:
+				//
+				//    typeof process !== "undefined" &&
+				//       process.env &&
+				//       process.env.IS_GUTENBERG_PLUGIN === true ? archives : void 0;
+				//
+				node[ seen ] = true;
+				path.replaceWith(
+					t.ifStatement(
+						logicalExpression,
+						t.blockStatement( [ t.expressionStatement( node ) ] )
+					)
+				);
 			},
 		},
 	};
