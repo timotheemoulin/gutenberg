@@ -11,8 +11,16 @@ const isBlockMetadataExperimental = require( './src/is-block-metadata-experiment
 const BLOCK_LIBRARY_INDEX_PATH = 'block-library/src/index.js';
 
 /**
- * Babel plugin which transforms `warning` function calls to wrap within a
- * condition that checks if `process.env.NODE_ENV !== 'production'`.
+ * Babel plugin that transforms the references to experimental blocks imported in
+ * BLOCK_LIBRARY_INDEX_PATH to conditional expressions.
+ *
+ * For example:
+ *     myExperimentalBlock,
+ * On build becomes:
+ *     process.env.IS_GUTENBERG_PLUGIN === true ? myExperimentalBlock : void 0
+ *
+ * This ensures the dead code elimination removes the experimental blocks modules
+ * during the production build.
  *
  * @param {import('@babel/core')} babel Current Babel object.
  *
@@ -34,7 +42,7 @@ function babelPlugin( { types: t } ) {
 	);
 
 	const nodeEnvCheckExpression = t.binaryExpression(
-		'!==',
+		'===',
 		t.memberExpression(
 			processEnvExpression,
 			t.identifier( 'IS_GUTENBERG_PLUGIN' ),
@@ -187,6 +195,13 @@ function babelPlugin( { types: t } ) {
 				this.transformedExperimentalBlocks.add( node.name );
 			},
 		},
+
+		/**
+		 * After the build, confirm that all the imported experimental blocks were
+		 * indeed transformed by the visitor above.
+		 *
+		 * @param {Object} fileState Babel-provided state.
+		 */
 		post( fileState ) {
 			if ( ! isProcessingBlockLibraryIndexJs( fileState ) ) {
 				return;
