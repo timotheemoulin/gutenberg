@@ -8,6 +8,8 @@ const fs = require( 'fs' );
  */
 const isBlockMetadataExperimental = require( './src/is-block-metadata-experimental' );
 
+const BLOCK_LIBRARY_INDEX_PATH = 'block-library/src/index.js';
+
 /**
  * Babel plugin which transforms `warning` function calls to wrap within a
  * condition that checks if `process.env.NODE_ENV !== 'production'`.
@@ -52,8 +54,16 @@ function babelPlugin( { types: t } ) {
 	);
 
 	return {
+		pre() {
+			this.importedExperimentalBlocks = new Set();
+			this.transformedExperimentalBlocks = new Set();
+		},
 		visitor: {
 			ImportDeclaration( path, state ) {
+				if ( ! isProcessingBlockLibraryIndexJs( state.file ) ) {
+					return;
+				}
+
 				const currentFile = state.file.opts.filename;
 				// Only transform block-library/src/index.js.
 				if ( ! currentFile.endsWith( 'block-library/src/index.js' ) ) {
@@ -125,14 +135,10 @@ function babelPlugin( { types: t } ) {
 				}
 
 				// Keep track of all the imported identifiers of the experimental blocks.
-				state.experimentalNames = [ name ].concat(
-					state.experimentalNames || []
-				);
+				this.importedExperimentalBlocks.add( name );
 			},
 			Identifier( path, state ) {
-				const currentFile = state.file.opts.filename;
-				// Only transform the index.js.
-				if ( ! currentFile.endsWith( 'block-library/src/index.js' ) ) {
+				if ( ! isProcessingBlockLibraryIndexJs( state.file ) ) {
 					return;
 				}
 
@@ -149,7 +155,7 @@ function babelPlugin( { types: t } ) {
 				}
 
 				// Ignore if it's not one of the experimental blocks identified in the ImportDeclaration visitor.
-				const names = state.experimentalNames || [];
+				const names = Array.from( this.importedExperimentalBlocks );
 				const isExperimentalBlock =
 					names
 						.map( ( name ) => path.isIdentifier( { name } ) )
@@ -176,9 +182,54 @@ function babelPlugin( { types: t } ) {
 						t.blockStatement( [ t.expressionStatement( node ) ] )
 					)
 				);
+
+				// Keep track of all the transformations.
+				this.transformedExperimentalBlocks.add( node.name );
 			},
 		},
+		post( fileState ) {
+			if ( ! isProcessingBlockLibraryIndexJs( fileState ) ) {
+				return;
+			}
+
+			if (
+				! areSetsEqual(
+					this.importedExperimentalBlocks,
+					this.transformedExperimentalBlocks
+				)
+			) {
+				const importedAsString = Array.from(
+					this.importedExperimentalBlocks
+				).join( ', ' );
+				const transformedAsString = Array.from(
+					this.transformedExperimentalBlocks
+				).join( ', ' );
+				throw new Error(
+					'Some experimental blocks were not transformed in ' +
+						BLOCK_LIBRARY_INDEX_PATH +
+						'.\n Imported:    ' + // Additional spaces to keep the outputs aligned in CLI.
+						importedAsString +
+						',\n Transformed: ' +
+						transformedAsString
+				);
+			}
+		},
 	};
+}
+
+function isProcessingBlockLibraryIndexJs( file ) {
+	return (
+		file.opts &&
+		file.opts.filename &&
+		file.opts.filename.endsWith( BLOCK_LIBRARY_INDEX_PATH )
+	);
+}
+
+function areSetsEqual( set1, set2 ) {
+	return (
+		set1.size === set2.size &&
+		Array.from( set1 ).every( ( value ) => set2.has( value ) )
+	);
 }
 
 module.exports = babelPlugin;
