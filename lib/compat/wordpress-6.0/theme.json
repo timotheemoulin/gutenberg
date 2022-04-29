@@ -241,14 +241,8 @@
 		}
 	},
 	"styles": {
-		"spacing": { 
-			"blockGap": "24px", 
-			"padding": {
-				"top": "var(--wp--style--block-gap)",
-				"right": "var(--wp--style--block-gap)",
-				"bottom": "var(--wp--style--block-gap)",
-				"left": "var(--wp--style--block-gap)"
-			}  
+		"spacing": {
+			"blockGap": "24px"
 		}
 	}
 }
