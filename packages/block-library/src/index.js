@@ -127,7 +127,8 @@ const registerBlock = ( block ) => {
  * Function to get all the block-library blocks in an array
  */
 const getAllBlocks = () => [
-	// The blocks listed here are wrapped in a conditional expression
+	// This list contains both stable and experimental blocks.
+	// The experimental ones are wrapped in a conditional expression
 	// by the `packages/block-library/babel-plugin.js`.
 	//
 	// For example:
@@ -135,9 +136,8 @@ const getAllBlocks = () => [
 	// Becomes:
 	//    process.env.IS_GUTENBERG_PLUGIN === true ? myExperimentalBlock : void 0
 	//
-	// This enables listing both stable and experimental blocks in a single list,
-	// while ensuring the dead code elimination removes the experimental blocks
-	// code during the production build.
+	// This enables storing both in the same list while ensuring the dead code
+	// elimination removes the experimental blocks code during the production build.
 	//
 	// See https://github.com/WordPress/gutenberg/pull/40655 for more context.
 
