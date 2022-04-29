@@ -48,21 +48,6 @@
 	}
 }
 
-.components-form-token-field__tokens-and-input-wrapper {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	padding: 5px $grid-unit-05;
-
-	&.has-tokens {
-		padding: 3px 5px;
-	}
-
-	&:not(.is-next-36px-default-size) {
-		padding: $grid-unit-05*0.5 $grid-unit-05;
-	}
-}
-
 .components-form-token-field__label {
 	display: inline-block;
 	margin-bottom: $grid-unit-10;

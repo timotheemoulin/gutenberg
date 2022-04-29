@@ -38,6 +38,7 @@ import isShallowEqual from '@wordpress/is-shallow-equal';
  */
 import Token from './token';
 import TokenInput from './token-input';
+import { TokensAndInputWrapper } from './styles';
 import SuggestionsList from './suggestions-list';
 import withSpokenMessages from '../higher-order/with-spoken-messages';
 
@@ -555,18 +556,12 @@ class FormTokenField extends Component {
 		components.splice( this.getIndexOfInput(), 0, this.renderInput() );
 
 		return (
-			<div
-				className={ classnames(
-					'components-form-token-field__tokens-and-input-wrapper',
-					{
-						'is-next-36px-default-size': this.props
-							.__next36pxDefaultSize,
-						'has-tokens': this.props.value.length,
-					}
-				) }
+			<TokensAndInputWrapper
+				__next36pxDefaultSize={ this.props.__next36pxDefaultSize }
+				hasTokens={ this.props.value.length }
 			>
 				{ components }
-			</div>
+			</TokensAndInputWrapper>
 		);
 	}
 
