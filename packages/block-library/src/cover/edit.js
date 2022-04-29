@@ -51,7 +51,6 @@ import {
 	__experimentalPanelColorGradientSettings as PanelColorGradientSettings,
 	__experimentalBlockAlignmentMatrixControl as BlockAlignmentMatrixControl,
 	__experimentalBlockFullHeightAligmentControl as FullHeightAlignmentControl,
-	__experimentalUseBorderProps as useBorderProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
@@ -74,7 +73,6 @@ import {
 	isContentPositionCenter,
 	getPositionClassName,
 } from './shared';
-import cleanEmptyObject from '../utils/clean-empty-object';
 
 extend( [ namesPlugin ] );
 
@@ -302,6 +300,7 @@ function CoverEdit( {
 	context: { postId, postType },
 } ) {
 	const {
+		align,
 		contentPosition,
 		id,
 		useFeaturedImage,
@@ -653,14 +652,6 @@ function CoverEdit( {
 
 	const ref = useRef();
 	const blockProps = useBlockProps( { ref } );
-	const borderProps = useBorderProps( attributes );
-	const borderRadiusStyles = cleanEmptyObject( {
-		borderTopLeftRadius: borderProps.style.borderTopLeftRadius,
-		borderTopRightRadius: borderProps.style.borderTopRightRadius,
-		borderBottomLeftRadius: borderProps.style.borderBottomLeftRadius,
-		borderBottomRightRadius: borderProps.style.borderBottomRightRadius,
-		borderRadius: borderProps.style.borderRadius,
-	} );
 
 	// Check for fontSize support before we pass a fontSize attribute to the innerBlocks.
 	const hasFontSizes = !! useSetting( 'typography.fontSizes' )?.length;
@@ -745,10 +736,10 @@ function CoverEdit( {
 		<>
 			{ controls }
 			<div
-				{ ...blockProps }
-				className={ classnames( classes, blockProps.className ) }
-				style={ { ...style, ...blockProps.style } }
-				data-url={ url }
+				className={ classnames( 'block-library-cover__outer-wrapper', {
+					[ `align${ align }` ]: align,
+					'is-selected': isSelected,
+				} ) }
 			>
 				<ResizableCover
 					className="block-library-cover__resize-container"
@@ -765,63 +756,63 @@ function CoverEdit( {
 					} }
 					showHandle={ isSelected }
 				/>
-				<span
-					aria-hidden="true"
-					className={ 'block-library-cover__border-visualizer' }
-					style={ borderProps.style }
-				/>
-				<span
-					aria-hidden="true"
-					className={ classnames(
-						'wp-block-cover__background',
-						dimRatioToClass( dimRatio ),
-						borderProps.className,
-						{
-							[ overlayColor.class ]: overlayColor.class,
-							'has-background-dim': dimRatio !== undefined,
-							// For backwards compatibility. Former versions of the Cover Block applied
-							// `.wp-block-cover__gradient-background` in the presence of
-							// media, a gradient and a dim.
-							'wp-block-cover__gradient-background':
-								url && gradientValue && dimRatio !== 0,
-							'has-background-gradient': gradientValue,
-							[ gradientClass ]: gradientClass,
-						}
-					) }
-					style={ {
-						backgroundImage: gradientValue,
-						...bgStyle,
-						...borderProps.style,
-					} }
-				/>
+				<div
+					{ ...blockProps }
+					className={ classnames( classes, blockProps.className ) }
+					style={ { ...style, ...blockProps.style } }
+					data-url={ url }
+				>
+					<span
+						aria-hidden="true"
+						className={ classnames(
+							'wp-block-cover__background',
+							dimRatioToClass( dimRatio ),
+							{
+								[ overlayColor.class ]: overlayColor.class,
+								'has-background-dim': dimRatio !== undefined,
+								// For backwards compatibility. Former versions of the Cover Block applied
+								// `.wp-block-cover__gradient-background` in the presence of
+								// media, a gradient and a dim.
+								'wp-block-cover__gradient-background':
+									url && gradientValue && dimRatio !== 0,
+								'has-background-gradient': gradientValue,
+								[ gradientClass ]: gradientClass,
+							}
+						) }
+						style={ {
+							backgroundImage: gradientValue,
+							...bgStyle,
+						} }
+					/>
 
-				{ url && isImageBackground && isImgElement && (
-					<img
-						ref={ isDarkElement }
-						className="wp-block-cover__image-background"
-						alt={ alt }
-						src={ url }
-						style={ { ...mediaStyle, ...borderRadiusStyles } }
+					{ url && isImageBackground && isImgElement && (
+						<img
+							ref={ isDarkElement }
+							className="wp-block-cover__image-background"
+							alt={ alt }
+							src={ url }
+							style={ mediaStyle }
+						/>
+					) }
+					{ url && isVideoBackground && (
+						<video
+							ref={ isDarkElement }
+							className="wp-block-cover__video-background"
+							autoPlay
+							muted
+							loop
+							src={ url }
+							style={ mediaStyle }
+						/>
+					) }
+					{ isUploadingMedia && <Spinner /> }
+					<CoverPlaceholder
+						disableMediaButtons
+						onSelectMedia={ onSelectMedia }
+						onError={ onUploadError }
 					/>
-				) }
-				{ url && isVideoBackground && (
-					<video
-						ref={ isDarkElement }
-						className="wp-block-cover__video-background"
-						autoPlay
-						muted
-						loop
-						src={ url }
-						style={ { ...mediaStyle, ...borderRadiusStyles } }
-					/>
-				) }
-				{ isUploadingMedia && <Spinner /> }
-				<CoverPlaceholder
-					disableMediaButtons
-					onSelectMedia={ onSelectMedia }
-					onError={ onUploadError }
-				/>
-				<div { ...innerBlocksProps } />
+					<div { ...innerBlocksProps } />
+				</div>
 			</div>
 		</>
 	);
