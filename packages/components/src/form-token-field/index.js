@@ -554,7 +554,20 @@ class FormTokenField extends Component {
 		const components = map( this.props.value, this.renderToken );
 		components.splice( this.getIndexOfInput(), 0, this.renderInput() );
 
-		return components;
+		return (
+			<div
+				className={ classnames(
+					'components-form-token-field__tokens-and-input-wrapper',
+					{
+						'is-next-36px-default-size': this.props
+							.__next36pxDefaultSize,
+						'has-tokens': this.props.value.length,
+					}
+				) }
+			>
+				{ components }
+			</div>
+		);
 	}
 
 	renderToken( token, index, tokens ) {

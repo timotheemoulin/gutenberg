@@ -31,6 +31,7 @@ const continents = [
 ];
 
 const getKnobs = () => ( {
+	__next36pxDefaultSize: boolean( '__next36pxDefaultSize', false ),
 	showHowTo: boolean( 'Show how to instructions', true ),
 	expandOnFocus: boolean( 'Expand on focus', false ),
 	placeholder: text( 'Placeholder', '' ),
@@ -43,6 +44,7 @@ const FormTokenFieldExample = () => {
 
 	return (
 		<FormTokenField
+			__next36pxDefaultSize={ knobs.__next36pxDefaultSize }
 			value={ selectedContinents }
 			suggestions={ continents }
 			onChange={ ( tokens ) => setSelectedContinents( tokens ) }
@@ -80,6 +82,7 @@ const FormTokenFieldAsyncExample = () => {
 
 	return (
 		<FormTokenField
+			__next36pxDefaultSize={ knobs.__next36pxDefaultSize }
 			value={ selectedContinents }
 			suggestions={ availableContinents }
 			onChange={ ( tokens ) => setSelectedContinents( tokens ) }
