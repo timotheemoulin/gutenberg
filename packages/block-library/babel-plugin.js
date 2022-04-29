@@ -32,7 +32,7 @@ function createBabelPlugin( shouldProcessFile, shouldProcessImport ) {
 		shouldProcessFile = isProcessingBlockLibraryIndexJs;
 	}
 	if ( ! shouldProcessImport ) {
-		shouldProcessImport = isImportDeclarationExperimental;
+		shouldProcessImport = isImportDeclarationAnExperimentalBlock;
 	}
 	/**
 	 * The babel plugin created by createBabelPlugin.
@@ -177,7 +177,15 @@ function createBabelPlugin( shouldProcessFile, shouldProcessImport ) {
 	};
 }
 
-function isImportDeclarationExperimental( path ) {
+/**
+ * Tests whether an import declaration refers to an experimental block.
+ * In broad strokes, it's a block that says "__experimental" in its block.json file.
+ * For details, check the implementation.
+ *
+ * @param {Object} path Babel.js AST path representing the import declaration,
+ * @return {boolean} Whether the import represents an experimental block.
+ */
+function isImportDeclarationAnExperimentalBlock( path ) {
 	// Only look for wildcard imports like import * as a from "source":
 	const { node } = path;
 	const namespaceSpecifier = node.specifiers.find(
@@ -242,6 +250,10 @@ function isImportDeclarationExperimental( path ) {
 	return true;
 }
 
+/**
+ * @param {Object} file Babel.js file object.
+ * @return {boolean} true if file refers to packages/block-library/index.js.
+ */
 function isProcessingBlockLibraryIndexJs( file ) {
 	return (
 		file.opts &&
@@ -250,6 +262,11 @@ function isProcessingBlockLibraryIndexJs( file ) {
 	);
 }
 
+/**
+ * @param {Set} set1 The first set.
+ * @param {Set} set2 The second set.
+ * @return {boolean} Whether the two sets contain the same data.
+ */
 function areSetsEqual( set1, set2 ) {
 	return (
 		set1.size === set2.size &&
