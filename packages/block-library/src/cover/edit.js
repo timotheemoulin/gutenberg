@@ -74,6 +74,7 @@ import {
 	isContentPositionCenter,
 	getPositionClassName,
 } from './shared';
+import cleanEmptyObject from '../utils/clean-empty-object';
 
 extend( [ namesPlugin ] );
 
@@ -653,6 +654,13 @@ function CoverEdit( {
 	const ref = useRef();
 	const blockProps = useBlockProps( { ref } );
 	const borderProps = useBorderProps( attributes );
+	const borderRadiusStyles = cleanEmptyObject( {
+		borderTopLeftRadius: borderProps.style.borderTopLeftRadius,
+		borderTopRightRadius: borderProps.style.borderTopRightRadius,
+		borderBottomLeftRadius: borderProps.style.borderBottomLeftRadius,
+		borderBottomRightRadius: borderProps.style.borderBottomRightRadius,
+		borderRadius: borderProps.style.borderRadius,
+	} );
 
 	// Check for fontSize support before we pass a fontSize attribute to the innerBlocks.
 	const hasFontSizes = !! useSetting( 'typography.fontSizes' )?.length;
@@ -759,6 +767,11 @@ function CoverEdit( {
 				/>
 				<span
 					aria-hidden="true"
+					className={ 'block-library-cover__border-visualizer' }
+					style={ borderProps.style }
+				/>
+				<span
+					aria-hidden="true"
 					className={ classnames(
 						'wp-block-cover__background',
 						dimRatioToClass( dimRatio ),
@@ -788,7 +801,7 @@ function CoverEdit( {
 						className="wp-block-cover__image-background"
 						alt={ alt }
 						src={ url }
-						style={ mediaStyle }
+						style={ { ...mediaStyle, ...borderRadiusStyles } }
 					/>
 				) }
 				{ url && isVideoBackground && (
@@ -799,7 +812,7 @@ function CoverEdit( {
 						muted
 						loop
 						src={ url }
-						style={ mediaStyle }
+						style={ { ...mediaStyle, ...borderRadiusStyles } }
 					/>
 				) }
 				{ isUploadingMedia && <Spinner /> }
