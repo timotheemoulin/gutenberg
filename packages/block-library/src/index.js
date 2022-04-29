@@ -128,7 +128,7 @@ const registerBlock = ( block ) => {
  */
 const getAllBlocks = () => [
 	// The blocks listed here are wrapped in a conditional expression
-	// by the block-library/babel-plugin.
+	// by the `packages/block-library/babel-plugin.js`.
 	//
 	// For example:
 	//    myExperimentalBlock,
