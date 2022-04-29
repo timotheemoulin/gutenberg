@@ -148,6 +148,7 @@ const getAllBlocks = () => [
 	heading,
 	gallery,
 	list,
+	listItem,
 	quote,
 
 	// Register all remaining core blocks.
@@ -169,7 +170,6 @@ const getAllBlocks = () => [
 	html,
 	latestComments,
 	latestPosts,
-	listItem,
 	navigationArea,
 	mediaText,
 	missing,
