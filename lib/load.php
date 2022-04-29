@@ -115,7 +115,7 @@ require __DIR__ . '/compat/wordpress-6.0/post-lock.php';
 require __DIR__ . '/compat/wordpress-6.0/blocks.php';
 require __DIR__ . '/compat/wordpress-6.0/block-template-utils.php';
 require __DIR__ . '/compat/wordpress-6.0/functions.php';
-require __DIR__ . '/compat/wordpress-6.0/class-wp-theme-json-gutenberg.php';
+require __DIR__ . '/compat/wordpress-6.0/class-wp-theme-json-6-0.php';
 require __DIR__ . '/compat/wordpress-6.0/class-wp-theme-json-resolver-6-0.php';
 require __DIR__ . '/compat/wordpress-6.0/block-patterns.php';
 require __DIR__ . '/compat/wordpress-6.0/block-template.php';
@@ -126,6 +126,7 @@ require __DIR__ . '/compat/wordpress-6.0/client-assets.php';
 // WordPress 6.1 compat.
 require __DIR__ . '/compat/wordpress-6.1/blocks.php';
 require __DIR__ . '/compat/wordpress-6.1/persisted-preferences.php';
+require __DIR__ . '/compat/wordpress-6.1/class-wp-theme-json-gutenberg.php';
 
 // Experimental features.
 remove_action( 'plugins_loaded', '_wp_theme_json_webfonts_handler' ); // Turns off WP 6.0's stopgap handler for Webfonts API.
