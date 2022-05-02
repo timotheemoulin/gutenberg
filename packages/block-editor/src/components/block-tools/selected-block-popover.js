@@ -84,7 +84,7 @@ function SelectedBlockPopover( {
 		! isTyping && ! isNavigationMode && isEmptyDefaultBlock;
 	const shouldShowBreadcrumb = isNavigationMode;
 	const shouldShowContextualToolbar =
-		! isNavigationMode &&
+		isNavigationMode &&
 		! hasFixedToolbar &&
 		isLargeViewport &&
 		! isMultiSelecting &&
@@ -195,6 +195,8 @@ function wrapperSelector( select ) {
 		getBlockRootClientId,
 		getBlock,
 		getBlockParents,
+		getSettings,
+		isNavigationMode: _isNavigationMode,
 		__experimentalGetBlockListSettingsForBlocks,
 	} = select( blockEditorStore );
 
@@ -221,10 +223,14 @@ function wrapperSelector( select ) {
 				?.__experimentalCaptureToolbars
 	);
 
+	const settings = getSettings();
+
 	return {
 		clientId,
 		rootClientId: getBlockRootClientId( clientId ),
 		name,
+		hasReducedUI: settings.hasReducedUI,
+		isNavigationMode: _isNavigationMode(),
 		isEmptyDefaultBlock:
 			name && isUnmodifiedDefaultBlock( { name, attributes } ),
 		capturingClientId,
