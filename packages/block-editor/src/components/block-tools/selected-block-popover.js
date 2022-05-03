@@ -84,7 +84,7 @@ function SelectedBlockPopover( {
 		! isTyping && ! isNavigationMode && isEmptyDefaultBlock;
 	const shouldShowBreadcrumb = isNavigationMode;
 	const shouldShowContextualToolbar =
-		isNavigationMode &&
+		! isNavigationMode &&
 		! hasFixedToolbar &&
 		isLargeViewport &&
 		! isMultiSelecting &&
@@ -178,7 +178,7 @@ function SelectedBlockPopover( {
 					key={ clientId }
 				/>
 			) }
-			{ false && (
+			{ shouldShowBreadcrumb && (
 				<BlockSelectionButton
 					clientId={ clientId }
 					rootClientId={ rootClientId }
