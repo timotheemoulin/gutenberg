@@ -10,4 +10,5 @@ selectors.register( 'role', selectorScript, { contentScript: true } );
 
 export { PageUtils } from './page';
 export { RequestUtils } from './request';
+export { EditorCanvas } from './editor-canvas';
 export { test, expect } from './test';

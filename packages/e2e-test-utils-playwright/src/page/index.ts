@@ -6,7 +6,6 @@ import type { Browser, Page, BrowserContext } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { clickBlockToolbarButton } from './click-block-toolbar-button';
 import { createNewPost } from './create-new-post';
 import { getEditedPostContent } from './get-edited-post-content';
 import { getPageError } from './get-page-error';
@@ -20,7 +19,6 @@ import {
 import { pressKeyTimes } from './press-key-times';
 import { openPreviewPage } from './preview';
 import { setBrowserViewport } from './set-browser-viewport';
-import { showBlockToolbar } from './show-block-toolbar';
 import { visitAdminPage } from './visit-admin-page';
 import { visitSiteEditor } from './site-editor';
 
@@ -35,7 +33,6 @@ class PageUtils {
 		this.browser = this.context.browser()!;
 	}
 
-	clickBlockToolbarButton = clickBlockToolbarButton;
 	createNewPost = createNewPost;
 	getEditedPostContent = getEditedPostContent;
 	getPageError = getPageError;
@@ -43,7 +40,6 @@ class PageUtils {
 	isCurrentURL = isCurrentURL;
 	pressKeyWithModifier = pressKeyWithModifier;
 	setClipboardData = setClipboardData;
-	showBlockToolbar = showBlockToolbar;
 	visitAdminPage = visitAdminPage;
 	visitSiteEditor = visitSiteEditor;
 	openDocumentSettingsSidebar = openDocumentSettingsSidebar;
