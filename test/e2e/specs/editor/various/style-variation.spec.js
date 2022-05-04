@@ -1,10 +1,21 @@
 /**
  * WordPress dependencies
  */
-const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
+const {
+	test,
+	expect,
+	EditorCanvas,
+} = require( '@wordpress/e2e-test-utils-playwright' );
+
+test.use( {
+	editorCanvas: async ( { page }, use ) => {
+		await use( new EditorCanvas( { page } ) );
+	},
+} );
 
 test.describe( 'adding blocks', () => {
 	test( 'Should switch to the plain style of the quote block', async ( {
+		editorCanvas,
 		page,
 		pageUtils,
 	} ) => {
@@ -16,7 +27,7 @@ test.describe( 'adding blocks', () => {
 			attributes: { value: '<p>Quote content</p>' },
 		} );
 
-		await pageUtils.clickBlockToolbarButton( 'Quote' );
+		await editorCanvas.clickBlockToolbarButton( 'Quote' );
 
 		await page.click( 'role=menuitem[name="Plain"i]' );
 
