@@ -9,7 +9,7 @@ const {
 
 test.use( {
 	editor: async ( { page }, use ) => {
-		await use( new Editor( { page, isIframe: true } ) );
+		await use( new Editor( { page, hasIframe: true } ) );
 	},
 } );
 
@@ -59,7 +59,7 @@ test.describe( 'Template Part', () => {
 		await expect( paragraph ).toBeVisible();
 	} );
 
-	test.only( 'can detach blocks from a template part', async ( {
+	test( 'can detach blocks from a template part', async ( {
 		admin,
 		editor,
 		page,
@@ -97,7 +97,7 @@ test.describe( 'Template Part', () => {
 			'data-block'
 		);
 		await editor.selectBlockByClientId( templatePartClientId );
-		await canvas.clickBlockOptionsMenuItem(
+		await editor.clickBlockOptionsMenuItem(
 			'Detach blocks from template part'
 		);
 

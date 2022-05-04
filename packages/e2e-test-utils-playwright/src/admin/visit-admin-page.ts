@@ -4,13 +4,22 @@
 import { join } from 'path';
 
 /**
+ * Internal dependencies
+ */
+import type { Admin } from './';
+
+/**
  * Visits admin page and handle errors.
  *
- * @this {import('./').PageUtils}
+ * @param {Admin}  this
  * @param {string} adminPath String to be serialized as pathname.
  * @param {string} query     String to be serialized as query portion of URL.
  */
-export async function visitAdminPage( adminPath, query ) {
+export async function visitAdminPage(
+	this: Admin,
+	adminPath: string,
+	query: string
+) {
 	await this.page.goto(
 		join( 'wp-admin', adminPath ) + ( query ? `?${ query }` : '' )
 	);
