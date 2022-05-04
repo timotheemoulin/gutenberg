@@ -98,7 +98,7 @@ export default function Controls( {
 	setAttributes,
 	clientId,
 	setOverlayColor,
-	ref,
+	coverRef,
 	onSelectMedia,
 	currentSettings,
 } ) {
@@ -117,7 +117,7 @@ export default function Controls( {
 	const {
 		isVideoBackground,
 		isImageBackground,
-		isDarkElement,
+		mediaElement,
 		hasInnerBlocks,
 		url,
 		isImgElement,
@@ -183,9 +183,9 @@ export default function Controls( {
 		( isImageBackground && ( ! hasParallax || isRepeated ) );
 
 	const imperativeFocalPointPreview = ( value ) => {
-		const [ styleOfRef, property ] = isDarkElement.current
-			? [ isDarkElement.current.style, 'objectPosition' ]
-			: [ ref.current.style, 'backgroundPosition' ];
+		const [ styleOfRef, property ] = mediaElement.current
+			? [ mediaElement.current.style, 'objectPosition' ]
+			: [ coverRef.current.style, 'backgroundPosition' ];
 		styleOfRef[ property ] = mediaPosition( value );
 	};
 	return (
