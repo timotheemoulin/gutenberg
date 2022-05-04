@@ -189,10 +189,13 @@ class AztecView extends Component {
 
 	blur() {
 		AztecInputState.blur( this.aztecViewRef.current );
+		// Unmounting the component needs to update the current focused element
+		AztecInputState.notifyInputChange();
 	}
 
 	focus() {
 		AztecInputState.focus( this.aztecViewRef.current );
+		AztecInputState.notifyInputChange();
 	}
 
 	isFocused() {
