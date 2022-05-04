@@ -1,18 +1,28 @@
 /**
  * WordPress dependencies
  */
-const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
+const {
+	test,
+	expect,
+	Editor,
+} = require( '@wordpress/e2e-test-utils-playwright' );
+
+test.use( {
+	editor: async ( { page }, use ) => {
+		await use( new Editor( { page } ) );
+	},
+} );
 
 test.describe( 'Paragraph', () => {
-	test.beforeEach( async ( { pageUtils } ) => {
-		await pageUtils.createNewPost();
+	test.beforeEach( async ( { admin } ) => {
+		await admin.createNewPost();
 	} );
 
 	test( 'should output unwrapped editable paragraph', async ( {
+		editor,
 		page,
-		pageUtils,
 	} ) => {
-		await pageUtils.insertBlock( {
+		await editor.insertBlock( {
 			name: 'core/paragraph',
 		} );
 		await page.keyboard.type( '1' );

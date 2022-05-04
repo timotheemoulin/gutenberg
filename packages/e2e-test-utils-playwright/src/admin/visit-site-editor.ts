@@ -6,26 +6,26 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import type { PageUtils } from './index';
-
-const CANVAS_SELECTOR = 'iframe[title="Editor canvas"i]';
+import type { Admin } from './';
 
 interface SiteEditorQueryParams {
 	postId: string | number;
 	postType: string;
 }
 
+const CANVAS_SELECTOR = 'iframe[title="Editor canvas"i]';
+
 /**
  * Visits the Site Editor main page
  *
  * By default, it also skips the welcome guide. The option can be disabled if need be.
  *
- * @param {PageUtils}             this
+ * @param {Admin}                 this
  * @param {SiteEditorQueryParams} query            Query params to be serialized as query portion of URL.
  * @param {boolean}               skipWelcomeGuide Whether to skip the welcome guide as part of the navigation.
  */
 export async function visitSiteEditor(
-	this: PageUtils,
+	this: Admin,
 	query: SiteEditorQueryParams,
 	skipWelcomeGuide = true
 ) {
@@ -51,32 +51,4 @@ export async function visitSiteEditor(
 				.toggle( 'core/edit-site', 'welcomeGuideStyles', false );
 		} );
 	}
-}
-
-/**
- * Save entities in the site editor. Assumes the editor is in a dirty state.
- *
- * @param {PageUtils} this
- */
-export async function saveSiteEditorEntities( this: PageUtils ) {
-	await this.page
-		.locator( 'role=region[name="Header"i] >> role=button[name="Save"i]' )
-		.click();
-
-	// The sidebar entities panel opens with another save button. Click this too.
-	await this.page
-		.locator( 'role=region[name="Publish"i] >> role=button[name="Save"i]' )
-		.click();
-
-	// The panel will close revealing the main editor save button again.
-	// It will have the classname `.is-busy` while saving. Wait for it to
-	// not have that classname.
-	// TODO - find a way to improve this selector to use role/name.
-	await this.page.waitForSelector(
-		'.edit-site-save-button__button:not(.is-busy)'
-	);
-}
-
-export async function getCanvas( this: PageUtils ) {
-	return this.page.frameLocator( CANVAS_SELECTOR );
 }

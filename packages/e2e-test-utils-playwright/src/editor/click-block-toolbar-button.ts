@@ -1,18 +1,15 @@
 /**
  * Internal dependencies
  */
-import type { EditorCanvas } from './index';
+import type { Editor } from './index';
 
 /**
  * Clicks a block toolbar button.
  *
- * @param {EditorCanvas} this
- * @param {string}       label The text string of the button label.
+ * @param {Editor} this
+ * @param {string} label The text string of the button label.
  */
-export async function clickBlockToolbarButton(
-	this: EditorCanvas,
-	label: string
-) {
+export async function clickBlockToolbarButton( this: Editor, label: string ) {
 	await this.showBlockToolbar();
 
 	const blockToolbar = this.canvas.locator(

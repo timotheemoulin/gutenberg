@@ -1,17 +1,28 @@
 /**
  * WordPress dependencies
  */
-const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
+const {
+	test,
+	expect,
+	Editor,
+} = require( '@wordpress/e2e-test-utils-playwright' );
+
+test.use( {
+	editor: async ( { page }, use ) => {
+		await use( new Editor( { page } ) );
+	},
+} );
 
 test.describe( 'adding a quote', () => {
 	test( 'should allow the user to type right away', async ( {
+		admin,
+		editor,
 		page,
-		pageUtils,
 	} ) => {
-		await pageUtils.createNewPost();
+		await admin.createNewPost();
 
 		// Inserting a quote block
-		await pageUtils.insertBlock( {
+		await editor.insertBlock( {
 			name: 'core/quote',
 		} );
 
@@ -19,7 +30,7 @@ test.describe( 'adding a quote', () => {
 		await page.keyboard.type( 'Quote content' );
 
 		// Check the content
-		const content = await pageUtils.getEditedPostContent();
+		const content = await editor.getEditedPostContent();
 		expect( content ).toBe(
 			`<!-- wp:quote -->
 <blockquote class="wp-block-quote"><p>Quote content</p></blockquote>

@@ -4,7 +4,7 @@
 const {
 	test,
 	expect,
-	EditorCanvas,
+	Editor,
 } = require( '@wordpress/e2e-test-utils-playwright' );
 
 /**
@@ -15,8 +15,8 @@ const {
  */
 
 test.use( {
-	editorCanvas: async ( { page }, use ) => {
-		await use( new EditorCanvas( { page } ) );
+	editor: async ( { page }, use ) => {
+		await use( new Editor( { page } ) );
 	},
 	widgetsCustomizerPage: async ( { page, pageUtils }, use ) => {
 		await use( new WidgetsCustomizerPage( { page, pageUtils } ) );
@@ -95,7 +95,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should open the inspector panel', async ( {
-		editorCanvas,
+		editor,
 		page,
 		requestUtils,
 		widgetsCustomizerPage,
@@ -122,7 +122,7 @@ test.describe( 'Widgets Customizer', () => {
 		await widgetsCustomizerPage.expandWidgetArea( 'Footer #1' );
 
 		await page.focus( 'text=First Paragraph' );
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 
 		await showMoreSettingsButton.click();
 
@@ -143,7 +143,7 @@ test.describe( 'Widgets Customizer', () => {
 		await expect( widgetsFooter1Heading ).toBeVisible();
 		await expect( inspectorHeading ).not.toBeVisible();
 
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 		await showMoreSettingsButton.click();
 
 		// Expect the inspector panel to be found.
@@ -279,7 +279,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should clear block selection', async ( {
-		editorCanvas,
+		editor,
 		page,
 		requestUtils,
 		widgetsCustomizerPage,
@@ -294,7 +294,7 @@ test.describe( 'Widgets Customizer', () => {
 
 		const paragraphBlock = page.locator( 'text="First Paragraph"' );
 		await paragraphBlock.focus();
-		await editorCanvas.showBlockToolbar();
+		await editor.showBlockToolbar();
 
 		const blockToolbar = page.locator(
 			'role=toolbar[name="Block tools"i]'
@@ -308,7 +308,7 @@ test.describe( 'Widgets Customizer', () => {
 			await expect( blockToolbar ).not.toBeVisible();
 
 			await paragraphBlock.focus();
-			await editorCanvas.showBlockToolbar();
+			await editor.showBlockToolbar();
 		}
 
 		// Expect clicking on the preview iframe should clear the selection.
@@ -317,7 +317,7 @@ test.describe( 'Widgets Customizer', () => {
 			await expect( blockToolbar ).not.toBeVisible();
 
 			await paragraphBlock.focus();
-			await editorCanvas.showBlockToolbar();
+			await editor.showBlockToolbar();
 		}
 
 		// Expect clicking on the empty space at the end of the editor
@@ -334,7 +334,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should handle legacy widgets', async ( {
-		editorCanvas,
+		editor,
 		page,
 		widgetsCustomizerPage,
 	} ) => {
@@ -383,10 +383,10 @@ test.describe( 'Widgets Customizer', () => {
 		).toBeVisible();
 
 		await legacyWidgetBlock.focus();
-		await editorCanvas.showBlockToolbar();
+		await editor.showBlockToolbar();
 
 		// Testing removing the block.
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 		await page.click( 'role=menuitem[name=/Remove Legacy Widget/]' );
 
 		// Add it back again using the variant.
@@ -425,7 +425,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should handle esc key events', async ( {
-		editorCanvas,
+		editor,
 		page,
 		requestUtils,
 		widgetsCustomizerPage,
@@ -440,12 +440,12 @@ test.describe( 'Widgets Customizer', () => {
 
 		const paragraphBlock = page.locator( 'text="First Paragraph"' );
 		await paragraphBlock.focus();
-		await editorCanvas.showBlockToolbar();
+		await editor.showBlockToolbar();
 
 		const optionsMenu = page.locator( 'role=menu[name="Options"i]' );
 
 		// Open the more menu dropdown in block toolbar.
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 		await expect( optionsMenu ).toBeVisible();
 
 		// Expect pressing the Escape key to close the dropdown,
@@ -468,7 +468,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should move (inner) blocks to another sidebar', async ( {
-		editorCanvas,
+		editor,
 		page,
 		requestUtils,
 		widgetsCustomizerPage,
@@ -482,14 +482,14 @@ test.describe( 'Widgets Customizer', () => {
 		await widgetsCustomizerPage.expandWidgetArea( 'Footer #1' );
 
 		await page.focus( 'text="First Paragraph"' );
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 		await page.click( 'role=menuitem[name="Group"i]' );
 
 		// Refocus the paragraph block.
 		await page.focus(
 			'*role=document[name="Paragraph block"i] >> text="First Paragraph"'
 		);
-		await editorCanvas.clickBlockToolbarButton( 'Move to widget area' );
+		await editor.clickBlockToolbarButton( 'Move to widget area' );
 
 		await page.click( 'role=menuitemradio[name="Footer #2"i]' );
 
@@ -523,7 +523,7 @@ test.describe( 'Widgets Customizer', () => {
 	} );
 
 	test( 'should stay in block settings after making a change in that area', async ( {
-		editorCanvas,
+		editor,
 		page,
 		widgetsCustomizerPage,
 	} ) => {
@@ -548,7 +548,7 @@ test.describe( 'Widgets Customizer', () => {
 		await page.focus( 'role=document[name="Paragraph block"i]' );
 
 		// Click the three dots button, then click "Show More Settings".
-		await editorCanvas.clickBlockToolbarButton( 'Options' );
+		await editor.clickBlockToolbarButton( 'Options' );
 		await page.click( 'role=menuitem[name="Show more settings"i]' );
 
 		// Change `drop cap` (Any change made in this section is sufficient; not required to be `drop cap`).

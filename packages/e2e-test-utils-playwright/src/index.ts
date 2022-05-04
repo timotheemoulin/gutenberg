@@ -8,7 +8,8 @@ import { selectorScript } from 'role-selector/playwright-test';
 // Replace this with the native role engine when it's ready.
 selectors.register( 'role', selectorScript, { contentScript: true } );
 
+export { Admin } from './admin';
+export { Editor } from './editor';
 export { PageUtils } from './page';
 export { RequestUtils } from './request';
-export { EditorCanvas } from './editor-canvas';
 export { test, expect } from './test';

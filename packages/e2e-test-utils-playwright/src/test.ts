@@ -8,7 +8,7 @@ import type { ConsoleMessage } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { PageUtils, RequestUtils } from './index';
+import { Admin, PageUtils, RequestUtils } from './index';
 
 const STORAGE_STATE_PATH =
 	process.env.STORAGE_STATE_PATH ||
@@ -98,6 +98,7 @@ function observeConsoleLogging( message: ConsoleMessage ) {
 
 const test = base.extend<
 	{
+		admin: Admin;
 		pageUtils: PageUtils;
 		snapshotConfig: void;
 	},
@@ -105,6 +106,9 @@ const test = base.extend<
 		requestUtils: RequestUtils;
 	}
 >( {
+	admin: async ( { page }, use ) => {
+		await use( new Admin( page ) );
+	},
 	page: async ( { page }, use ) => {
 		page.on( 'console', observeConsoleLogging );
 

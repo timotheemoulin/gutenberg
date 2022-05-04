@@ -4,12 +4,12 @@
 const {
 	test,
 	expect,
-	EditorCanvas,
+	Editor,
 } = require( '@wordpress/e2e-test-utils-playwright' );
 
 test.use( {
-	editorCanvas: async ( { page }, use ) => {
-		await use( new EditorCanvas( { page, isIframe: true } ) );
+	editor: async ( { page }, use ) => {
+		await use( new Editor( { page, isIframe: true } ) );
 	},
 } );
 
@@ -30,29 +30,29 @@ test.describe( 'Template Part', () => {
 	} );
 
 	test( 'shows changes in a template when a template part is modified', async ( {
+		admin,
+		editor,
 		page,
-		pageUtils,
-		editorCanvas,
 	} ) => {
 		const paragraphText = 'Header Template Part 123';
 
-		await pageUtils.visitSiteEditor( {
+		await admin.visitSiteEditor( {
 			postId: 'emptytheme//header',
 			postType: 'wp_template_part',
 		} );
 
 		// Edit the header.
-		await pageUtils.insertBlock( { name: 'core/paragraph' } );
+		await editor.insertBlock( { name: 'core/paragraph' } );
 		await page.keyboard.type( paragraphText );
 
-		await pageUtils.saveSiteEditorEntities();
+		await editor.saveSiteEditorEntities();
 
-		await pageUtils.visitSiteEditor( {
+		await admin.visitSiteEditor( {
 			postId: 'emptytheme//index',
 			postType: 'wp_template',
 		} );
 
-		const paragraph = await editorCanvas.canvas.locator(
+		const paragraph = await editor.canvas.locator(
 			`p >> text="${ paragraphText }"`
 		);
 
@@ -60,29 +60,29 @@ test.describe( 'Template Part', () => {
 	} );
 
 	test.only( 'can detach blocks from a template part', async ( {
+		admin,
+		editor,
 		page,
-		pageUtils,
-		editorCanvas,
 	} ) => {
 		const paragraphText = 'Header Template Part 456';
 
 		// Edit the header and save the changes.
-		await pageUtils.visitSiteEditor( {
+		await admin.visitSiteEditor( {
 			postId: 'emptytheme//header',
 			postType: 'wp_template_part',
 		} );
 
-		await pageUtils.insertBlock( { name: 'core/paragraph' } );
+		await editor.insertBlock( { name: 'core/paragraph' } );
 		await page.keyboard.type( paragraphText );
-		await pageUtils.saveSiteEditorEntities();
+		await editor.saveSiteEditorEntities();
 
 		// Visit the index.
-		await pageUtils.visitSiteEditor( {
+		await admin.visitSiteEditor( {
 			postId: 'emptytheme//index',
 			postType: 'wp_template',
 		} );
 
-		const canvas = editorCanvas.canvas;
+		const canvas = editor.canvas;
 
 		// Check that the header contains the paragraph added earlier.
 		const paragraphSelector = `p >> text="${ paragraphText }"`;
@@ -96,7 +96,7 @@ test.describe( 'Template Part', () => {
 		const templatePartClientId = await headerTemplatePart.getAttribute(
 			'data-block'
 		);
-		await pageUtils.selectBlockByClientId( templatePartClientId );
+		await editor.selectBlockByClientId( templatePartClientId );
 		await canvas.clickBlockOptionsMenuItem(
 			'Detach blocks from template part'
 		);
