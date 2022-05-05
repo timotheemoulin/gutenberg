@@ -106,8 +106,8 @@ const test = base.extend<
 		requestUtils: RequestUtils;
 	}
 >( {
-	admin: async ( { page }, use ) => {
-		await use( new Admin( page ) );
+	admin: async ( { page, pageUtils }, use ) => {
+		await use( new Admin( page, pageUtils ) );
 	},
 	page: async ( { page }, use ) => {
 		page.on( 'console', observeConsoleLogging );

@@ -11,24 +11,25 @@ import type { Browser, Page, BrowserContext } from '@playwright/test';
  */
 import { createNewPost } from './create-new-post';
 import { getPageError } from './get-page-error';
-import { isCurrentURL } from './is-current-url';
 import { visitAdminPage } from './visit-admin-page';
 import { visitSiteEditor } from './visit-site-editor';
+import type { PageUtils } from '../page-utils';
 
 export class Admin {
 	browser: Browser;
 	page: Page;
+	pageUtils: PageUtils;
 	context: BrowserContext;
 
-	constructor( page: Page ) {
+	constructor( page: Page, pageUtils: PageUtils ) {
 		this.page = page;
 		this.context = page.context();
 		this.browser = this.context.browser()!;
+		this.pageUtils = pageUtils;
 	}
 
 	createNewPost = createNewPost;
 	getPageError = getPageError;
-	isCurrentURL = isCurrentURL;
 	visitAdminPage = visitAdminPage;
 	visitSiteEditor = visitSiteEditor;
 }

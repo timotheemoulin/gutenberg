@@ -25,14 +25,14 @@ export async function visitAdminPage(
 	);
 
 	// Handle upgrade required screen
-	if ( this.isCurrentURL( 'wp-admin/upgrade.php' ) ) {
+	if ( this.pageUtils.isCurrentURL( 'wp-admin/upgrade.php' ) ) {
 		// Click update
 		await this.page.click( '.button.button-large.button-primary' );
 		// Click continue
 		await this.page.click( '.button.button-large' );
 	}
 
-	if ( this.isCurrentURL( 'wp-login.php' ) ) {
+	if ( this.pageUtils.isCurrentURL( 'wp-login.php' ) ) {
 		throw new Error( 'Not logged in' );
 	}
 

@@ -6,6 +6,7 @@ import type { Browser, Page, BrowserContext } from '@playwright/test';
 /**
  * Internal dependencies
  */
+import { isCurrentURL } from './is-current-url';
 import {
 	setClipboardData,
 	pressKeyWithModifier,
@@ -24,6 +25,7 @@ class PageUtils {
 		this.browser = this.context.browser()!;
 	}
 
+	isCurrentURL = isCurrentURL;
 	pressKeyTimes = pressKeyTimes;
 	pressKeyWithModifier = pressKeyWithModifier;
 	setBrowserViewport = setBrowserViewport;
