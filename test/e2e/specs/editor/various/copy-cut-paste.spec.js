@@ -82,7 +82,7 @@ test.describe( 'Copy/cut/paste', () => {
 		await editor.insertBlock( { name: 'core/spacer' } );
 		// At this point the spacer wrapper should be focused.
 		await pageUtils.pressKeyWithModifier( 'primary', 'x' );
-		expect( await pageUtils.getEditedPostContent() ).toBe( '' );
+		expect( await editor.getEditedPostContent() ).toBe( '' );
 
 		// The block appender is only visible when there's no selection.
 		await page.evaluate( () => {
@@ -211,7 +211,7 @@ test.describe( 'Copy/cut/paste', () => {
 		expect( await editor.getEditedPostContent() ).toBe( '' );
 
 		// Insert a non textual element (a spacer)
-		await pageUtils.insertBlock( { name: 'core/spacer' } );
+		await editor.insertBlock( { name: 'core/spacer' } );
 		// Spacer is focused.
 		await page.evaluate( () => {
 			window.e2eTestPasteOnce = [];

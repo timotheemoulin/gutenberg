@@ -4,6 +4,7 @@
 const {
 	test,
 	expect,
+	Admin,
 	Editor,
 } = require( '@wordpress/e2e-test-utils-playwright' );
 
@@ -18,8 +19,8 @@ test.use( {
 	editor: async ( { page }, use ) => {
 		await use( new Editor( { page } ) );
 	},
-	widgetsCustomizerPage: async ( { page, pageUtils }, use ) => {
-		await use( new WidgetsCustomizerPage( { page, pageUtils } ) );
+	widgetsCustomizerPage: async ( { admin, page, pageUtils }, use ) => {
+		await use( new WidgetsCustomizerPage( { admin, page, pageUtils } ) );
 	},
 } );
 
@@ -577,10 +578,12 @@ test.describe( 'Widgets Customizer', () => {
 class WidgetsCustomizerPage {
 	/**
 	 * @param {Object}    config
+	 * @param {Admin}     config.admin
 	 * @param {Page}      config.page
 	 * @param {PageUtils} config.pageUtils
 	 */
-	constructor( { page, pageUtils } ) {
+	constructor( { admin, page, pageUtils } ) {
+		this.admin = admin;
 		this.page = page;
 		this.pageUtils = pageUtils;
 
@@ -593,7 +596,7 @@ class WidgetsCustomizerPage {
 	}
 
 	async visitCustomizerPage() {
-		await this.pageUtils.visitAdminPage( 'customize.php' );
+		await this.admin.visitAdminPage( 'customize.php' );
 
 		// Disable welcome guide.
 		await this.page.evaluate( () => {
