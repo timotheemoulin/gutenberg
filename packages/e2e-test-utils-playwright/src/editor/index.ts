@@ -18,7 +18,7 @@ import { saveSiteEditorEntities } from './site-editor';
 
 interface EditorConstructorParams {
 	page: Page;
-	hasIframe: boolean;
+	hasIframe?: boolean;
 }
 
 export class Editor {

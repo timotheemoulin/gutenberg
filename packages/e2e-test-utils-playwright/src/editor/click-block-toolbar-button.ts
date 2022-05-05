@@ -12,7 +12,7 @@ import type { Editor } from './index';
 export async function clickBlockToolbarButton( this: Editor, label: string ) {
 	await this.showBlockToolbar();
 
-	const blockToolbar = this.canvas.locator(
+	const blockToolbar = this.page.locator(
 		'role=toolbar[name="Block tools"i]'
 	);
 	const button = blockToolbar.locator( `role=button[name="${ label }"]` );

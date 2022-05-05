@@ -85,14 +85,15 @@ test.describe( 'Template Part', () => {
 		const canvas = editor.canvas;
 
 		// Check that the header contains the paragraph added earlier.
+		const templatePartSelector = 'header[data-type="core/template-part"]';
 		const paragraphSelector = `p >> text="${ paragraphText }"`;
-		const paragraph = await canvas.locator( paragraphSelector );
-		const headerTemplatePart = await canvas.locator(
-			`header[data-type="core/template-part"] >> ${ paragraphSelector }`
+		const paragraphInTemplatePart = await canvas.locator(
+			`${ templatePartSelector } >> ${ paragraphSelector }`
 		);
-		await expect( paragraph ).toBeVisible();
+		await expect( paragraphInTemplatePart ).toBeVisible();
 
 		// Detach the blocks.
+		const headerTemplatePart = await canvas.locator( templatePartSelector );
 		const templatePartClientId = await headerTemplatePart.getAttribute(
 			'data-block'
 		);
@@ -103,7 +104,8 @@ test.describe( 'Template Part', () => {
 
 		// The paragraph should still be present, but the template part is no
 		// longer there.
-		await expect( paragraph ).toBeVisible();
+		const loneParagraph = await canvas.locator( paragraphSelector );
+		await expect( loneParagraph ).toBeVisible();
 		await expect( headerTemplatePart ).not.toBeVisible();
 	} );
 } );
